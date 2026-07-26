@@ -1,4 +1,4 @@
-export class Typecheck {
+export class TypeCheck {
     static isInteger(variable) {
         if (!Number.isInteger(variable)) {
             throw new TypeError(`Expected an Integer, received of type: ${typeof(variable)} value: ${variable}`);
