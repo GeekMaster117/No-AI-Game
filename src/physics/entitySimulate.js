@@ -4,7 +4,25 @@ import { ReferenceCheck } from "../validations/referenceCheck";
 import { Entity } from "../entity";
 
 class EntitySimulate {
-    #hookedEntities = new Map();
+    #hookedEntities; #simulationStateStop;
+    #simulateTimeout;
+
+    #simulate() {
+        this.#simulateTimeout = undefined;
+
+        if (this.#simulationStateStop === true) {
+            return;
+        }
+
+        if (this.#simulateTimeout == null) {
+            this.#simulateTimeout = setTimeout(this.#simulate.bind(this), 1000 / simulateTickRate);
+        }
+    }
+
+    constructor() {
+        this.#hookedEntities = new Map();
+        this.#simulationStateStop = true;
+    }
 
     hook(entity) {
         TypeCheck.isInstanceOf(entity, Entity);
@@ -28,6 +46,19 @@ class EntitySimulate {
 
         const entitySimulationFlags = this.#hookedEntities.get(entity);
         simulationFlags.forEach(flag => entitySimulationFlags.add(flag));
+    }
+
+    startSimulation() {
+        this.#simulationStateStop = false;
+        if (this.#simulateTimeout == null) {
+            this.#simulate();
+        }
+    }
+
+    stopSimulation() {
+        this.#simulationStateStop = true;
+        clearTimeout(this.#simulateTimeout);
+        this.#simulateTimeout = undefined;
     }
 }
 
