@@ -35,7 +35,8 @@ function removeValidations(source) {
 
             const removeObjects = new Set([
                 "TypeCheck",
-                "RangeCheck"
+                "RangeCheck",
+                "ReferenceCheck"
             ]);
 
             if (!removeObjects.has(object.name)) {
