@@ -1,5 +1,4 @@
 import { Canvas } from "./render/canvas.js"
-import { Entity } from "./entity.js";
 import { clamp } from "./utilities/mathUtils.js";
 
 const canvasWidth = window.innerWidth;
