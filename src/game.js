@@ -1,14 +1,36 @@
 import { Canvas } from "./render/canvas.js"
 import { Entity } from "./entity.js";
+import { clamp } from "./utilities/mathUtils.js";
 
-let canvas = new Canvas(window.innerWidth, window.innerHeight);
-canvas.drawSquare(50, 50, 200, 200, 'red');
+const canvasWidth = window.innerWidth;
+const canvasHeight = window.innerHeight;
+let canvas = new Canvas(canvasWidth, canvasHeight);
 canvas.injectCanvas();
 
-let player = new Entity('player', 20, 10, 8);
-let enemy = new Entity('enemy', 15, 2, 6);
+let squareX = 0;
+let squareSide = 200;
+let velocityX = 0.6;
 
-while (!player.isDead() && !enemy.isDead()) {
-    player.attack(enemy);
-    enemy.attack(player);
+let prev;
+function step(timestamp) {
+    if (prev == null) {
+        prev = timestamp;
+    }
+    const elapsed = timestamp - prev;
+    prev = timestamp;
+
+    squareX = clamp(squareX + (velocityX * elapsed), 0, canvasWidth - squareSide);
+    if (squareX >= canvasWidth - squareSide) {
+        velocityX = -Math.abs(velocityX);
+    }
+    else if (squareX <= 0) {
+        velocityX = Math.abs(velocityX);
+    }
+
+    canvas.clear();
+    canvas.drawSquare(squareX, 50, squareSide, squareSide, 'red');
+
+    requestAnimationFrame(step);
 }
+
+requestAnimationFrame(step);

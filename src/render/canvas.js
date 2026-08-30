@@ -33,6 +33,10 @@ export class Canvas {
         this.#context.fillRect(x, y, width, height);
     }
 
+    clear() {
+        this.#context.clearRect(0, 0, this.#width, this.#height);
+    }
+
     injectCanvas() {
         document.body.appendChild(this.#element);
     }
