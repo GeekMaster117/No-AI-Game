@@ -11,16 +11,16 @@ export class EntitySimulate {
     static #simulate() {
         EntitySimulate.#simulateTimeout = undefined;
 
-        if (this.#simulationStateStop === true) {
+        if (EntitySimulate.#simulationStateStop === true) {
             return;
         }
 
-        if (this.#simulateTimeout == null) {
-            this.#simulateTimeout = setTimeout(EntitySimulate.#simulate, 1000 / simulateTickRate);
+        if (EntitySimulate.#simulateTimeout == null) {
+            EntitySimulate.#simulateTimeout = setTimeout(EntitySimulate.#simulate, 1000 / simulateTickRate);
         }
     }
 
-    hook(entity) {
+    static hook(entity) {
         TypeCheck.isInstanceOf(entity, Entity);
 
         if(!EntitySimulate.#hookedEntities.has(entity)) {
@@ -28,13 +28,13 @@ export class EntitySimulate {
         }
     }
 
-    unhook(entity) {
+    static unhook(entity) {
         TypeCheck.isInstanceOf(entity, Entity);
 
         EntitySimulate.#hookedEntities.delete(entity);
     }
 
-    setSimulationFlags(entity, simulationFlags) {
+    static setSimulationFlags(entity, simulationFlags) {
         TypeCheck.isInstanceOf(entity, Entity);
         TypeCheck.isIterable(simulationFlags);
 
@@ -44,14 +44,14 @@ export class EntitySimulate {
         simulationFlags.forEach(flag => entitySimulationFlags.add(flag));
     }
 
-    startSimulation() {
+    static startSimulation() {
         EntitySimulate.#simulationStateStop = false;
         if (EntitySimulate.#simulateTimeout == null) {
             EntitySimulate.#simulate();
         }
     }
 
-    stopSimulation() {
+    static stopSimulation() {
         EntitySimulate.#simulationStateStop = true;
         clearTimeout(EntitySimulate.#simulateTimeout);
         EntitySimulate.#simulateTimeout = undefined;

@@ -2,6 +2,13 @@ import { TypeCheck } from "./typecheck";
 import { ReferenceCheck } from "./referenceCheck"
 import { CustomCheck } from "./customCheck";
 
+class UnauthorizedError extends Error {
+    constructor(message = 'Unauthorized') {
+        super(message);
+        this.name = 'UnauthorizedError';
+    }
+}
+
 export class AccessControl {
     static #accessMap = new Map();
 
@@ -21,5 +28,13 @@ export class AccessControl {
         ReferenceCheck.mapHas(AccessControl.#accessMap, key);
 
         return AccessControl.#accessMap.get(key);
+    }
+
+    static authorize(key, credential) {
+        ReferenceCheck.mapHas(AccessControl.#accessMap, key);
+
+        if (AccessControl.#accessMap.get(key) !== credential) {
+            throw new UnauthorizedError(`Unauthorized attempt to access ${key}`)
+        }
     }
 }
