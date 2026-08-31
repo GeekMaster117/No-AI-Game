@@ -37,7 +37,8 @@ function removeValidations(source) {
                 "TypeCheck",
                 "RangeCheck",
                 "ReferenceCheck",
-                "CustomCheck"
+                "CustomCheck",
+                "AccessControl"
             ]);
 
             if (!removeObjects.has(object.name)) {
