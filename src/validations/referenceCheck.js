@@ -9,4 +9,13 @@ export class ReferenceCheck {
             throw new ReferenceError(`Key ${key.constructor.name} cannot be referenced in Map: ${map.constructor.name}`);
         }
     }
+
+    static mapNotHas(map, key) {
+        TypeCheck.isInstanceOf(map, Map);
+        TypeCheck.isObject(key);
+
+        if(map.has(key)) {
+            throw new ReferenceError(`Key ${key.constructor.name} can be referenced in Map: ${map.constructor.name}, when expecting not to`);
+        }
+    }
 }

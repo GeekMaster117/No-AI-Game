@@ -17,8 +17,14 @@ export class TypeCheck {
         }
     }
 
-    static isNullOrUndefined(variable) {
+    static isValid(variable) {
         if (variable == null) {
+            throw new TypeError(`Expected a valid value, received of type: ${typeof(variable)}`);
+        }
+    }
+
+    static isNullOrUndefined(variable) {
+        if (variable != null) {
             throw new TypeError(`Expected a valid value, received of type: ${typeof(variable)}`);
         }
     }
@@ -42,6 +48,12 @@ export class TypeCheck {
 
         if(typeof(object[Symbol.iterator]) !== 'function') {
             throw new TypeError(`Expected an iterable object, received a non-iterable object: ${object.constructor.name}`)
+        }
+    }
+
+    static isFunction(fn) {
+        if(typeof(fn) !== 'function' ) {
+            throw new TypeError(`Expected a function, received of type: ${typeof(fn)}`)
         }
     }
 }
