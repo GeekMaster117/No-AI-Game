@@ -34,7 +34,7 @@ export class AccessControl {
         ReferenceCheck.mapHas(AccessControl.#accessMap, key);
 
         if (AccessControl.#accessMap.get(key) !== credential) {
-            throw new UnauthorizedError(`Unauthorized attempt to access ${key}`)
+            throw new UnauthorizedError(`Unauthorized attempt to access ${key.constructor.name}`)
         }
     }
 }

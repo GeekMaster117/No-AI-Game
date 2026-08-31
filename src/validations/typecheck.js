@@ -5,6 +5,12 @@ export class TypeCheck {
         }
     }
 
+    static isFloat(variable) {
+        if (Number(variable) !== variable || variable % 1 === 0) {
+            throw new TypeError(`Expected an Float, received of type: ${typeof(variable)} value: ${variable}`);
+        }
+    }
+
     static isString(variable) {
         if (typeof(variable) !== 'string') {
             throw new TypeError(`Expected a String, received of type: ${typeof(variable)} value: ${variable}`);
