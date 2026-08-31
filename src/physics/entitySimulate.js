@@ -15,6 +15,8 @@ export class EntitySimulate {
             return;
         }
 
+        // Todo
+
         if (EntitySimulate.#simulateTimeout == null) {
             EntitySimulate.#simulateTimeout = setTimeout(EntitySimulate.#simulate, 1000 / simulateTickRate);
         }
@@ -38,6 +40,7 @@ export class EntitySimulate {
         TypeCheck.isInstanceOf(entity, Entity);
         TypeCheck.isIterable(simulationFlags);
 
+        ReferenceCheck.objectHasAll(SimulationFlags, simulationFlags);
         ReferenceCheck.mapHas(EntitySimulate.#hookedEntities, entity);
 
         const entitySimulationFlags = EntitySimulate.#hookedEntities.get(entity);
