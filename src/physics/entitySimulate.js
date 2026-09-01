@@ -1,12 +1,16 @@
 import { simulateTickRate } from "../configs/physicsConfigs";
 import { TypeCheck } from "../validations/typecheck";
 import { ReferenceCheck } from "../validations/referenceCheck";
+import { CustomCheck } from "../validations/customCheck";
 import { Entity } from "../entity";
+import { clamp } from "../utilities/mathUtils";
+import { AccessControl } from "../validations/accessControl";
 
 export class EntitySimulate {
     static #hookedEntities = new Map();
     static #simulationStateStop = true;
     static #simulateTimeout;
+    static #prevTimestamp;
 
     static #simulate() {
         EntitySimulate.#simulateTimeout = undefined;
@@ -15,7 +19,23 @@ export class EntitySimulate {
             return;
         }
 
-        // Todo
+        if (EntitySimulate.#prevTimestamp == null) {
+            EntitySimulate.#prevTimestamp = performance.now();
+        }
+        const currentTimestamp = performance.now();
+        const elapsed = currentTimestamp - EntitySimulate.#prevTimestamp;
+        EntitySimulate.#prevTimestamp = currentTimestamp;
+
+        EntitySimulate.#hookedEntities.forEach((flags, entity) => {
+            let [x, y] = entity.getPosition();
+            const [velocityX, velocityY] = entity.getVelocity();
+
+            if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
+                // Todo
+            }
+
+            // Todo
+        });
 
         if (EntitySimulate.#simulateTimeout == null) {
             EntitySimulate.#simulateTimeout = setTimeout(EntitySimulate.#simulate, 1000 / simulateTickRate);
@@ -40,7 +60,7 @@ export class EntitySimulate {
         TypeCheck.isInstanceOf(entity, Entity);
         TypeCheck.isIterable(simulationFlags);
 
-        ReferenceCheck.objectHasAll(SimulationFlags, simulationFlags);
+        CustomCheck.all([...simulationFlags].map(flag => [ReferenceCheck.objectHas, [SimulationFlags, flag]]));
         ReferenceCheck.mapHas(EntitySimulate.#hookedEntities, entity);
 
         const entitySimulationFlags = EntitySimulate.#hookedEntities.get(entity);
@@ -56,8 +76,11 @@ export class EntitySimulate {
 
     static stopSimulation() {
         EntitySimulate.#simulationStateStop = true;
+
         clearTimeout(EntitySimulate.#simulateTimeout);
         EntitySimulate.#simulateTimeout = undefined;
+
+        EntitySimulate.#prevTimestamp = null;
     }
 }
 

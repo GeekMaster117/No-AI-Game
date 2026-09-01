@@ -24,12 +24,4 @@ export class ReferenceCheck {
             throw new ReferenceError(`Key ${key != null && typeof(key) === 'object' ? key.constructor.name : key} cannot be referenced in Object: ${object.constructor.name}`);
         }
     }
-
-    static objectHasAll(object, keys) {
-        TypeCheck.isIterable(keys);
-
-        for (const key of keys) {
-            ReferenceCheck.objectHas(object, key);
-        }
-    }
 }
