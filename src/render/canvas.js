@@ -19,6 +19,10 @@ export class Canvas {
         this.#context = this.#element.getContext('2d');
     }
 
+    getDimenstions() {
+        return [this.#width, this.#height];
+    }
+
     drawSquare(x, y, width, height, color) {
         TypeCheck.isInteger(x);
         TypeCheck.isInteger(y);
