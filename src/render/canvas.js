@@ -19,7 +19,7 @@ export class Canvas {
         this.#context = this.#element.getContext('2d');
     }
 
-    getDimenstions() {
+    getDimensions() {
         return [this.#width, this.#height];
     }
 

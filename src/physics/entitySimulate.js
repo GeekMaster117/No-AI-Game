@@ -28,13 +28,20 @@ export class EntitySimulate {
 
         EntitySimulate.#hookedEntities.forEach((flags, entity) => {
             let [x, y] = entity.getPosition();
+            const [width, height] = entity.getDimensions();
             const [velocityX, velocityY] = entity.getVelocity();
 
             if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
+                const [canvasWidth, canvasHeight] = entity.getBoundedCanvas().getDimensions();
+
                 // Todo
             }
+            else {
+                x = Math.round(x + (velocityX * elapsed));
+                y = Math.round(y + (velocityY * elapsed));
+            }
 
-            // Todo
+            entity.setPosition(x, y, AccessControl.getAccess(entity));
         });
 
         if (EntitySimulate.#simulateTimeout == null) {
