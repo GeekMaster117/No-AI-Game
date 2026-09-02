@@ -7,14 +7,28 @@ import { Canvas } from "./render/canvas.js";
 export class Entity {
     #name; #health; 
     #attack; #defense;
+    #width; #height;
     #x; #y; #velocityX; #velocityY;
     #canvas;
 
-    constructor(name = '', health = 1, attack = 1, defense = 1, canvas = undefined) {
+    constructor(name = '', health = 1, attack = 1, defense = 1, width = 1, height = 1, x = 0, y = 0, velocityX = 0, velocityY = 0, canvas = undefined) {
         TypeCheck.isString(name);
         TypeCheck.isInteger(health);
         TypeCheck.isInteger(attack);
         TypeCheck.isInteger(defense);
+        TypeCheck.isInteger(width);
+        TypeCheck.isInteger(height);
+        TypeCheck.isInteger(x);
+        TypeCheck.isInteger(y);
+
+        CustomCheck.any([
+            [TypeCheck.isInteger, [velocityX]],
+            [TypeCheck.isFloat, [velocityX]]
+        ]);
+        CustomCheck.any([
+            [TypeCheck.isInteger, [velocityY]],
+            [TypeCheck.isFloat, [velocityY]]
+        ]);
         CustomCheck.any([
             [TypeCheck.isInstanceOf, [canvas, Canvas]],
             [TypeCheck.isNullOrUndefined, [canvas]]
@@ -23,11 +37,19 @@ export class Entity {
         RangeCheck.isGreaterThan(health, 0);
         RangeCheck.isGreaterThan(attack, 0);
         RangeCheck.isGreaterThan(defense, 0);
+        RangeCheck.isGreaterThan(width, 0);
+        RangeCheck.isGreaterThan(height, 0);
 
         this.#name = name;
         this.#health = health;
         this.#attack = attack;
         this.#defense = defense;
+        this.#width = width;
+        this.#height = height;
+        this.#x = x;
+        this.#y = y;
+        this.#velocityX = velocityX;
+        this.#velocityY = velocityY;
         this.#canvas = canvas;
 
         AccessControl.setAccess(this, 'To change position and velocity of Entity');
@@ -43,6 +65,10 @@ export class Entity {
         return Math.floor(this.#attack / entityObj.#defense) + 2
     }
 
+    getDimensions() {
+        return [this.#width, this.#height];
+    }
+
     getPosition() {
         return [this.#x, this.#y];
     }
@@ -55,6 +81,17 @@ export class Entity {
         TypeCheck.isValid(this.#canvas);
 
         return this.#canvas;
+    }
+
+    setDimensions(width, height) {
+        TypeCheck.isInteger(width);
+        TypeCheck.isInteger(height);
+
+        RangeCheck.isGreaterThan(width, 0);
+        RangeCheck.isGreaterThan(height, 0);
+
+        this.#width = width;
+        this.#height = height;
     }
 
     setPosition(x, y, credential) {
