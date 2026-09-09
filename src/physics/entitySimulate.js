@@ -34,7 +34,8 @@ export class EntitySimulate {
             if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
                 const [canvasWidth, canvasHeight] = entity.getBoundedCanvas().getDimensions();
 
-                // Todo
+                x = Math.round(clamp(x + (velocityX * elapsed), 0, canvasWidth - width));
+                y = Math.round(clamp(y + (velocityY * elapsed), 0, canvasHeight - height));
             }
             else {
                 x = Math.round(x + (velocityX * elapsed));
