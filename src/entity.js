@@ -9,18 +9,32 @@ export class Entity {
     #attack; #defense;
     #width; #height;
     #x; #y; #velocityX; #velocityY;
+    #mass;
     #canvas;
 
-    constructor(name = '', health = 1, attack = 1, defense = 1, width = 1, height = 1, x = 0, y = 0, velocityX = 0, velocityY = 0, canvas = undefined) {
+    constructor(name = '', health = 1, attack = 1, defense = 1, width = 1, height = 1, x = 0, y = 0, velocityX = 0, velocityY = 0, mass = undefined, canvas = undefined) {
         TypeCheck.isString(name);
-        TypeCheck.isInteger(health);
-        TypeCheck.isInteger(attack);
-        TypeCheck.isInteger(defense);
-        TypeCheck.isInteger(width);
-        TypeCheck.isInteger(height);
-        TypeCheck.isInteger(x);
-        TypeCheck.isInteger(y);
 
+        CustomCheck.all([
+            [TypeCheck.isInteger, [health]],
+            [RangeCheck.isGreaterThan, [health, 0]]
+        ]);
+        CustomCheck.all([
+            [TypeCheck.isInteger, [attack]],
+            [RangeCheck.isGreaterThan, [attack, 0]]
+        ]);
+        CustomCheck.all([
+            [TypeCheck.isInteger, [defense]],
+            [RangeCheck.isGreaterThan, [defense, 0]]
+        ]);
+        CustomCheck.all([
+            [TypeCheck.isInteger, [width]],
+            [RangeCheck.isGreaterThan, [width, 0]]
+        ]);
+        CustomCheck.all([
+            [TypeCheck.isInteger, [height]],
+            [RangeCheck.isGreaterThan, [height, 0]]
+        ]);
         CustomCheck.any([
             [TypeCheck.isInteger, [velocityX]],
             [TypeCheck.isFloat, [velocityX]]
@@ -30,15 +44,22 @@ export class Entity {
             [TypeCheck.isFloat, [velocityY]]
         ]);
         CustomCheck.any([
+            [CustomCheck.all, [[
+                [CustomCheck.any, [[
+                    [TypeCheck.isInteger, [mass]],
+                    [TypeCheck.isFloat, [mass]]
+                ]]],
+                [RangeCheck.isGreaterThan, [mass, 0]]
+            ]]],
+            [TypeCheck.isNullOrUndefined, [mass]]
+        ]);
+        CustomCheck.any([
             [TypeCheck.isInstanceOf, [canvas, Canvas]],
             [TypeCheck.isNullOrUndefined, [canvas]]
         ]);
 
-        RangeCheck.isGreaterThan(health, 0);
-        RangeCheck.isGreaterThan(attack, 0);
-        RangeCheck.isGreaterThan(defense, 0);
-        RangeCheck.isGreaterThan(width, 0);
-        RangeCheck.isGreaterThan(height, 0);
+        TypeCheck.isInteger(x);
+        TypeCheck.isInteger(y);
 
         this.#name = name;
         this.#health = health;
@@ -50,6 +71,7 @@ export class Entity {
         this.#y = y;
         this.#velocityX = velocityX;
         this.#velocityY = velocityY;
+        this.#mass = mass;
         this.#canvas = canvas;
 
         AccessControl.setAccess(this, 'To change position and velocity of Entity');
@@ -81,6 +103,12 @@ export class Entity {
         TypeCheck.isValid(this.#canvas);
 
         return this.#canvas;
+    }
+
+    getMass() {
+        TypeCheck.isValid(this.#mass);
+
+        return this.#mass;
     }
 
     setDimensions(width, height) {
@@ -124,6 +152,18 @@ export class Entity {
         TypeCheck.isInstanceOf(canvas, Canvas);
 
         this.#canvas = canvas;
+    }
+
+    setMass(mass) {
+        CustomCheck.all([
+            [CustomCheck.any, [[
+                [TypeCheck.isInteger, [mass]],
+                [TypeCheck.isFloat, [mass]]
+            ]]],
+            [RangeCheck.isGreaterThan, [mass, 0]]
+        ]);
+
+        this.#mass = mass;
     }
 
     isDead() {

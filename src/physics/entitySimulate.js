@@ -93,5 +93,6 @@ export class EntitySimulate {
 }
 
 export const SimulationFlags = {
-    CANVAS_COLLISION: "CANVAS_COLLISION"
+    CANVAS_COLLISION: "CANVAS_COLLISION",
+    BOUNCE: "BOUNCE"
 }
