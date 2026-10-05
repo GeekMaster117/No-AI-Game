@@ -1,10 +1,10 @@
-import { simulateTickRate } from "../configs/physicsConfigs";
-import { TypeCheck } from "../validations/typecheck";
-import { ReferenceCheck } from "../validations/referenceCheck";
-import { CustomCheck } from "../validations/customCheck";
-import { Entity } from "../entity";
-import { clamp } from "../utilities/mathUtils";
-import { AccessControl } from "../validations/accessControl";
+import { simulateTickRate } from "../configs/physicsConfigs.js";
+import { TypeCheck } from "../validations/typecheck.js";
+import { ReferenceCheck } from "../validations/referenceCheck.js";
+import { CustomCheck } from "../validations/customCheck.js";
+import { Entity } from "../entity.js";
+import { clamp } from "../utilities/mathUtils.js";
+import { AccessControl } from "../validations/accessControl.js";
 
 export class EntitySimulate {
     static #hookedEntities = new Map();
@@ -34,8 +34,8 @@ export class EntitySimulate {
             if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
                 const [canvasWidth, canvasHeight] = entity.getBoundedCanvas().getDimensions();
 
-                x = Math.round(clamp(x + (velocityX * elapsed), 0, canvasWidth - width));
-                y = Math.round(clamp(y + (velocityY * elapsed), 0, canvasHeight - height));
+                x = clamp(Math.round(x + (velocityX * elapsed)), 0, canvasWidth - width);
+                y = clamp(Math.round(y + (velocityY * elapsed)), 0, canvasHeight - height);
             }
             else {
                 x = Math.round(x + (velocityX * elapsed));

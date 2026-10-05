@@ -1,5 +1,5 @@
-import { TypeCheck } from "./typecheck";
-import { RangeCheck } from "./rangeCheck";
+import { TypeCheck } from "./typecheck.js";
+import { RangeCheck } from "./rangeCheck.js";
 
 export class CustomCheck {
     /**

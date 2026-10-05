@@ -1,4 +1,4 @@
-import { TypeCheck } from "./typecheck";
+import { TypeCheck } from "./typecheck.js";
 
 export class ReferenceCheck {
     static mapHas(map, key) {

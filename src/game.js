@@ -18,7 +18,7 @@ function step(timestamp) {
     const elapsed = timestamp - prev;
     prev = timestamp;
 
-    squareX = clamp(squareX + (velocityX * elapsed), 0, canvasWidth - squareSide);
+    squareX = clamp(Math.round(squareX + (velocityX * elapsed)), 0, canvasWidth - squareSide);
     if (squareX >= canvasWidth - squareSide) {
         velocityX = -Math.abs(velocityX);
     }

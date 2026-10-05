@@ -1,5 +1,5 @@
-import { TypeCheck } from "../validations/typecheck";
-import { RangeCheck } from "../validations/rangeCheck";
+import { TypeCheck } from "../validations/typecheck.js";
+import { RangeCheck } from "../validations/rangeCheck.js";
 
 export class Canvas {
     #element; #width; #height; #context;

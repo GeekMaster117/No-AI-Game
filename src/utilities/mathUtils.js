@@ -1,4 +1,4 @@
-import { TypeCheck } from "../validations/typecheck";
+import { TypeCheck } from "../validations/typecheck.js";
 
 export function clamp(value, min, max) {
     TypeCheck.isInteger(value);

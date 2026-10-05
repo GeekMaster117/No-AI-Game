@@ -1,6 +1,6 @@
-import { TypeCheck } from "./typecheck";
-import { ReferenceCheck } from "./referenceCheck"
-import { CustomCheck } from "./customCheck";
+import { TypeCheck } from "./typecheck.js";
+import { ReferenceCheck } from "./referenceCheck.js"
+import { CustomCheck } from "./customCheck.js";
 
 class UnauthorizedError extends Error {
     constructor(message = 'Unauthorized') {
