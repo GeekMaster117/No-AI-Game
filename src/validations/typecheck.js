@@ -42,7 +42,7 @@ export class TypeCheck {
     }
 
     static isInstanceOf(object, className) {
-        this.isObject(object);
+        TypeCheck.isObject(object);
 
         if (!(object instanceof className)) {
             throw new TypeError(`Expected an object of ${className}, received: ${object.constructor.name}`)
@@ -50,7 +50,7 @@ export class TypeCheck {
     }
     
     static isIterable(object) {
-        this.isObject(object);
+        TypeCheck.isObject(object);
 
         if(typeof(object[Symbol.iterator]) !== 'function') {
             throw new TypeError(`Expected an iterable object, received a non-iterable object: ${object.constructor.name}`)

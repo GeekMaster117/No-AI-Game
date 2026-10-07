@@ -1,35 +1,32 @@
 import { Canvas } from "./render/canvas.js"
-import { clamp } from "./utilities/mathUtils.js";
+import { Entity } from "./entity.js"
+import { EntitySimulate, SimulationFlags } from "./physics/entitySimulate.js"
 
 const canvasWidth = window.innerWidth;
 const canvasHeight = window.innerHeight;
 let canvas = new Canvas(canvasWidth, canvasHeight);
 canvas.injectCanvas();
 
-let squareX = 0;
-let squareSide = 200;
-let velocityX = 0.6;
+let box = new Entity({
+    x: 0,
+    y: 50,
+    width: 200,
+    height: 200,
+    velocityX: 0.6,
+    velocityY: 0.6,
+    canvas: canvas
+});
+EntitySimulate.hook(box);
+EntitySimulate.setSimulationFlags(box, [SimulationFlags.CANVAS_COLLISION, SimulationFlags.BOUNCE]);
 
-let prev;
 function step(timestamp) {
-    if (prev == null) {
-        prev = timestamp;
-    }
-    const elapsed = timestamp - prev;
-    prev = timestamp;
-
-    squareX = clamp(Math.round(squareX + (velocityX * elapsed)), 0, canvasWidth - squareSide);
-    if (squareX >= canvasWidth - squareSide) {
-        velocityX = -Math.abs(velocityX);
-    }
-    else if (squareX <= 0) {
-        velocityX = Math.abs(velocityX);
-    }
-
     canvas.clear();
-    canvas.drawSquare(squareX, 50, squareSide, squareSide, 'red');
+
+    box.render();
 
     requestAnimationFrame(step);
 }
 
 requestAnimationFrame(step);
+
+EntitySimulate.startSimulation();

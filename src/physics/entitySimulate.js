@@ -29,18 +29,45 @@ export class EntitySimulate {
         EntitySimulate.#hookedEntities.forEach((flags, entity) => {
             let [x, y] = entity.getPosition();
             const [width, height] = entity.getDimensions();
-            const [velocityX, velocityY] = entity.getVelocity();
+            let [velocityX, velocityY] = entity.getVelocity();
 
             if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
                 const [canvasWidth, canvasHeight] = entity.getBoundedCanvas().getDimensions();
 
-                x = clamp(Math.round(x + (velocityX * elapsed)), 0, canvasWidth - width);
-                y = clamp(Math.round(y + (velocityY * elapsed)), 0, canvasHeight - height);
+                let horizontalSidesCollided = 0
+                if (x <= 0) {
+                    ++horizontalSidesCollided;
+                }
+                if (x + width >= canvasWidth) {
+                    ++horizontalSidesCollided;
+                }
+
+                let verticalSidesCollided = [];
+                if (y <= 0) {
+                    ++verticalSidesCollided;
+                }
+                if (y + width >= canvasHeight) {
+                    ++verticalSidesCollided;
+                }
+
+                x = clamp(Math.round(x), 0, canvasWidth - width);
+                y = clamp(Math.round(y), 0, canvasHeight - height);
+
+                // if horizontalSidesCollided or VerticalSidesCollided is more then 1, it means the entity is boxed in and don't update the velocity
+                if (flags.has(SimulationFlags.BOUNCE)) {
+                    if (horizontalSidesCollided == 1) {
+                        velocityX *= -1;
+                    }
+                    if (verticalSidesCollided == 1) {
+                        velocityY *= -1;
+                    }
+
+                    entity.setVelocity(velocityX, velocityY, AccessControl.getAccess(entity));
+                }
             }
-            else {
-                x = Math.round(x + (velocityX * elapsed));
-                y = Math.round(y + (velocityY * elapsed));
-            }
+
+            x = Math.round(x + (velocityX * elapsed));
+            y = Math.round(y + (velocityY * elapsed));
 
             entity.setPosition(x, y, AccessControl.getAccess(entity));
         });
