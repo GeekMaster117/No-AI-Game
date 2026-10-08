@@ -1,11 +1,11 @@
-import { jsFileMap } from "./fileops.js";
+import { fileMap } from "./fileops.js";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import generate from "@babel/generator";
 import * as t from "@babel/types";
 
 export async function transform(inputPath, distPath) {
-    await jsFileMap(inputPath, distPath, removeValidations);
+    await fileMap(inputPath, distPath, ".js", removeValidations);
 }
 
 function removeValidations(source) {

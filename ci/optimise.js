@@ -1,8 +1,8 @@
-import { jsFileMap } from "./fileops.js";
+import { fileMap } from "./fileops.js";
 import { minify } from "terser";
 
 export async function optimise(inputPath, distPath) {
-    await jsFileMap(inputPath, distPath, minify, (x) => x.code, {
+    await fileMap(inputPath, distPath, ".js", minify, (x) => x.code, {
         compress: {
             passes: 5
         },

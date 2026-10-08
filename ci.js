@@ -10,4 +10,4 @@ await buildAndMinify(resolve('dist', 'transform', 'game.js'), resolve('dist', 'b
 
 await optimise(resolve('dist', 'build'), resolve('dist'));
 
-await buildIndexHTML(resolve('dist', 'game.js'));
+await buildIndexHTML(resolve('src'), resolve('dist'));

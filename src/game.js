@@ -19,7 +19,7 @@ let box = new Entity({
 EntitySimulate.hook(box);
 EntitySimulate.setSimulationFlags(box, [SimulationFlags.CANVAS_COLLISION, SimulationFlags.BOUNCE]);
 
-function step(timestamp) {
+function step() {
     canvas.clear();
 
     box.render();

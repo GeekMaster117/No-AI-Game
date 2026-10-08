@@ -1,13 +1,13 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export async function jsFileMap(inputPath, distPath, func, extract = (x) => x, ...params) {
+export async function fileMap(inputPath, distPath, endsWithFilter, func = (x) => x, extract = (x) => x, ...params) {
     const entries = await readdir(inputPath, {
         recursive: true,
         withFileTypes: true
     });
     const jsFiles = entries.filter(entry =>
-        entry.name.endsWith(".js")
+        entry.name.endsWith(endsWithFilter)
     );
 
     for (const file of jsFiles) {
