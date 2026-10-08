@@ -42,11 +42,11 @@ export class EntitySimulate {
                     ++horizontalSidesCollided;
                 }
 
-                let verticalSidesCollided = [];
+                let verticalSidesCollided = 0;
                 if (y <= 0) {
                     ++verticalSidesCollided;
                 }
-                if (y + width >= canvasHeight) {
+                if (y + height >= canvasHeight) {
                     ++verticalSidesCollided;
                 }
 
