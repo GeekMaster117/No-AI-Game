@@ -2,6 +2,8 @@ import { TypeCheck } from "../validations/typecheck.js";
 import { RangeCheck } from "../validations/rangeCheck.js";
 
 export class Canvas {
+    static #activeCanvas = new Set();
+
     #element; #width; #height; #context;
 
     constructor(width, height) {
@@ -43,5 +45,17 @@ export class Canvas {
 
     injectCanvas() {
         document.body.appendChild(this.#element);
+
+        Canvas.#activeCanvas.add(this);
+    }
+
+    removeCanvas() {
+        this.#element.remove();
+
+        Canvas.#activeCanvas.delete(this);
+    }
+
+    isActive() {
+        return Canvas.#activeCanvas.has(this);
     }
 }

@@ -27,12 +27,17 @@ export class EntitySimulate {
         EntitySimulate.#prevTimestamp = currentTimestamp;
 
         EntitySimulate.#hookedEntities.forEach((flags, entity) => {
+            const canvas = entity.getBoundedCanvas();
+            if (!canvas.isActive()) {
+                return;
+            }
+
             let [x, y] = entity.getPosition();
             const [width, height] = entity.getDimensions();
             let [velocityX, velocityY] = entity.getVelocity();
 
             if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
-                const [canvasWidth, canvasHeight] = entity.getBoundedCanvas().getDimensions();
+                const [canvasWidth, canvasHeight] = canvas.getDimensions();
 
                 let horizontalSidesCollided = 0
                 if (x <= 0) {

@@ -5,7 +5,17 @@ import { TypeCheck } from "./validations/typecheck.js";
 
 const canvasWidth = window.innerWidth;
 const canvasHeight = window.innerHeight;
-let canvas = new Canvas(canvasWidth, canvasHeight);
+const canvas1 = new Canvas(canvasWidth, canvasHeight);
+const canvas2 = new Canvas(canvasWidth, canvasHeight);
+
+let currentActiveCanvas = canvas1;
+let alternateCanvas = canvas2;
+function switchActiveCanvas() {
+    currentActiveCanvas.removeCanvas();
+    alternateCanvas.injectCanvas();
+
+    [currentActiveCanvas, alternateCanvas] = [alternateCanvas, currentActiveCanvas];
+}
 
 function getRandomIntegerInclusive(min, max) {
     TypeCheck.isInteger(min);
@@ -31,7 +41,7 @@ function generateRandomEntity() {
         velocityX: Math.random(),
         velocityY: Math.random(),
         color: getRandomColor(),
-        canvas: canvas
+        canvas: currentActiveCanvas
     });
 
     EntitySimulate.hook(entity);
@@ -41,7 +51,7 @@ function generateRandomEntity() {
 }
 
 function step() {
-    canvas.clear();
+    currentActiveCanvas.clear();
 
     entities.forEach(entity => entity.render());
 
@@ -52,11 +62,19 @@ requestAnimationFrame(step);
 
 EntitySimulate.startSimulation();
 
+const debugRow = document.createElement('div');
+debugRow.style.display = 'flex';
+debugRow.style.flexDirection = 'row';
+document.body.appendChild(debugRow);
+
 const generateButton = document.createElement('button');
 generateButton.textContent = 'Generate Entity';
-
 generateButton.addEventListener('click', generateRandomEntity);
+debugRow.appendChild(generateButton);
 
-document.body.appendChild(generateButton);
+const switchCanvasButton = document.createElement('button');
+switchCanvasButton.textContent = 'Switch Canvas';
+switchCanvasButton.addEventListener('click', switchActiveCanvas);
+debugRow.appendChild(switchCanvasButton);
 
-canvas.injectCanvas();
+canvas1.injectCanvas();
