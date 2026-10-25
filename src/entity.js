@@ -3,7 +3,6 @@ import { RangeCheck } from "./validations/rangeCheck.js";
 import { AccessControl } from "./validations/accessControl.js"
 import { CustomCheck } from "./validations/customCheck.js";
 import { BrowserValidation } from "./validations/browserValidation.js";
-import { Canvas } from "./render/canvas.js";
 
 export class Entity {
     #name; #health; 
@@ -12,9 +11,8 @@ export class Entity {
     #x; #y; #velocityX; #velocityY;
     #color;
     #mass;
-    #canvas;
 
-    constructor({name = '', health = 1, attack = 1, defense = 1, width = 1, height = 1, x = 0, y = 0, velocityX = 0, velocityY = 0, color = 'red', mass = undefined, canvas = undefined}) {
+    constructor({name = '', health = 1, attack = 1, defense = 1, width = 1, height = 1, x = 0, y = 0, velocityX = 0, velocityY = 0, color = 'red', mass = undefined}) {
         TypeCheck.isString(name);
 
         CustomCheck.all([
@@ -55,10 +53,6 @@ export class Entity {
             ]]],
             [TypeCheck.isNullOrUndefined, [mass]]
         ]);
-        CustomCheck.any([
-            [TypeCheck.isInstanceOf, [canvas, Canvas]],
-            [TypeCheck.isNullOrUndefined, [canvas]]
-        ]);
 
         BrowserValidation.isValidCSSColor(color);
 
@@ -77,7 +71,6 @@ export class Entity {
         this.#velocityY = velocityY;
         this.#color = color;
         this.#mass = mass;
-        this.#canvas = canvas;
 
         AccessControl.setAccess(this, 'To change position and velocity of Entity');
     }
@@ -104,10 +97,8 @@ export class Entity {
         return [this.#velocityX, this.#velocityY];
     }
 
-    getBoundedCanvas() {
-        TypeCheck.isValid(this.#canvas);
-
-        return this.#canvas;
+    getColor() {
+        return this.#color;
     }
 
     getMass() {
@@ -153,10 +144,10 @@ export class Entity {
         this.#velocityY = velocityY;
     }
 
-    setBoundedCanvas(canvas) {
-        TypeCheck.isInstanceOf(canvas, Canvas);
+    setColor(color) {
+        BrowserValidation.isValidCSSColor(color);
 
-        this.#canvas = canvas;
+        this.#color = color;
     }
 
     setMass(mass) {
@@ -195,12 +186,6 @@ export class Entity {
         TypeCheck.isInstanceOf(entityObj, Entity);
 
         entityObj.decreaseHealth(this.#calculateDamage(entityObj));
-    }
-
-    render() {
-        TypeCheck.isValid(this.#canvas);
-
-        this.#canvas.drawSquare(this.#x, this.#y, this.#width, this.#height, this.#color);
     }
 }
 

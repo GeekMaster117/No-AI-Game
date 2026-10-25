@@ -3,6 +3,7 @@ import { TypeCheck } from "../validations/typecheck.js";
 import { ReferenceCheck } from "../validations/referenceCheck.js";
 import { CustomCheck } from "../validations/customCheck.js";
 import { Entity } from "../entity.js";
+import { Canvas } from "../render/canvas.js";
 import { clamp } from "../utilities/mathUtils.js";
 import { AccessControl } from "../validations/accessControl.js";
 
@@ -26,55 +27,58 @@ export class EntitySimulate {
         const elapsed = currentTimestamp - EntitySimulate.#prevTimestamp;
         EntitySimulate.#prevTimestamp = currentTimestamp;
 
-        EntitySimulate.#hookedEntities.forEach((flags, entity) => {
-            const canvas = entity.getBoundedCanvas();
-            if (!canvas.isActive()) {
-                return;
-            }
-
-            let [x, y] = entity.getPosition();
-            const [width, height] = entity.getDimensions();
-            let [velocityX, velocityY] = entity.getVelocity();
-
-            if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
-                const [canvasWidth, canvasHeight] = canvas.getDimensions();
-
-                let horizontalSidesCollided = 0
-                if (x <= 0) {
-                    ++horizontalSidesCollided;
-                }
-                if (x + width >= canvasWidth) {
-                    ++horizontalSidesCollided;
+        Canvas.getActiveCanvas().forEach(canvas => {
+            canvas.getBoundedEntities().forEach(entity => {
+                if (!EntitySimulate.#hookedEntities.has(entity)) {
+                    return;
                 }
 
-                let verticalSidesCollided = 0;
-                if (y <= 0) {
-                    ++verticalSidesCollided;
-                }
-                if (y + height >= canvasHeight) {
-                    ++verticalSidesCollided;
-                }
+                const flags = EntitySimulate.#hookedEntities.get(entity);
 
-                x = clamp(Math.round(x), 0, canvasWidth - width);
-                y = clamp(Math.round(y), 0, canvasHeight - height);
+                let [x, y] = entity.getPosition();
+                const [width, height] = entity.getDimensions();
+                let [velocityX, velocityY] = entity.getVelocity();
 
-                // if horizontalSidesCollided or VerticalSidesCollided is more then 1, it means the entity is boxed in and don't update the velocity
-                if (flags.has(SimulationFlags.BOUNCE)) {
-                    if (horizontalSidesCollided == 1) {
-                        velocityX *= -1;
+                if (flags.has(SimulationFlags.CANVAS_COLLISION)) {
+                    const [canvasWidth, canvasHeight] = canvas.getDimensions();
+
+                    let horizontalSidesCollided = 0
+                    if (x <= 0) {
+                        ++horizontalSidesCollided;
                     }
-                    if (verticalSidesCollided == 1) {
-                        velocityY *= -1;
+                    if (x + width >= canvasWidth) {
+                        ++horizontalSidesCollided;
                     }
 
-                    entity.setVelocity(velocityX, velocityY, AccessControl.getAccess(entity));
+                    let verticalSidesCollided = 0;
+                    if (y <= 0) {
+                        ++verticalSidesCollided;
+                    }
+                    if (y + height >= canvasHeight) {
+                        ++verticalSidesCollided;
+                    }
+
+                    x = clamp(Math.round(x), 0, canvasWidth - width);
+                    y = clamp(Math.round(y), 0, canvasHeight - height);
+
+                    // if horizontalSidesCollided or VerticalSidesCollided is more then 1, it means the entity is boxed in and don't update the velocity
+                    if (flags.has(SimulationFlags.BOUNCE)) {
+                        if (horizontalSidesCollided == 1) {
+                            velocityX *= -1;
+                        }
+                        if (verticalSidesCollided == 1) {
+                            velocityY *= -1;
+                        }
+
+                        entity.setVelocity(velocityX, velocityY, AccessControl.getAccess(entity));
+                    }
                 }
-            }
 
-            x = Math.round(x + (velocityX * elapsed));
-            y = Math.round(y + (velocityY * elapsed));
+                x = Math.round(x + (velocityX * elapsed));
+                y = Math.round(y + (velocityY * elapsed));
 
-            entity.setPosition(x, y, AccessControl.getAccess(entity));
+                entity.setPosition(x, y, AccessControl.getAccess(entity));
+            });
         });
 
         if (EntitySimulate.#simulateTimeout == null) {

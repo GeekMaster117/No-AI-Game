@@ -1,12 +1,19 @@
+import { TypeCheck } from "./validations/typecheck.js";
 import { Canvas } from "./render/canvas.js"
 import { Entity } from "./entity.js"
+import { Draw } from "./render/draw.js";
 import { EntitySimulate, SimulationFlags } from "./physics/entitySimulate.js"
-import { TypeCheck } from "./validations/typecheck.js";
 
 const canvasWidth = window.innerWidth;
 const canvasHeight = window.innerHeight;
-const canvas1 = new Canvas(canvasWidth, canvasHeight);
-const canvas2 = new Canvas(canvasWidth, canvasHeight);
+const canvas1 = new Canvas({
+    width: canvasWidth, 
+    height: canvasHeight
+});
+const canvas2 = new Canvas({
+    width: canvasWidth, 
+    height: canvasHeight
+});
 
 let currentActiveCanvas = canvas1;
 let alternateCanvas = canvas2;
@@ -29,7 +36,6 @@ function getRandomColor() {
     return colors[getRandomIntegerInclusive(0, 3)];
 }
 
-let entities = []
 function generateRandomEntity() {
     const width = getRandomIntegerInclusive(10, 200);
     const height = getRandomIntegerInclusive(10, 200);
@@ -40,20 +46,19 @@ function generateRandomEntity() {
         height: height,
         velocityX: Math.random(),
         velocityY: Math.random(),
-        color: getRandomColor(),
-        canvas: currentActiveCanvas
+        color: getRandomColor()
     });
 
     EntitySimulate.hook(entity);
     EntitySimulate.setSimulationFlags(entity, [SimulationFlags.CANVAS_COLLISION, SimulationFlags.BOUNCE]);
 
-    entities.push(entity);
+    currentActiveCanvas.addBoundedEntity(entity);
 }
 
 function step() {
     currentActiveCanvas.clear();
 
-    entities.forEach(entity => entity.render());
+    Draw.renderEntities(currentActiveCanvas);
 
     requestAnimationFrame(step);
 }
